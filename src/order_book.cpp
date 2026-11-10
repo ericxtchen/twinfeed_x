@@ -42,17 +42,15 @@ std::optional<Level> OrderBook::best_ask() const {
 std::optional<std::uint64_t>
 OrderBook::quantity_at(Side side, std::int64_t price_ticks) const {
   if (side == Side::ASK) {
-    if (this->asks_.contains(price_ticks)) {
-      return this->asks_.at(price_ticks);
+    if (auto it = this->asks_.find(price_ticks); it != this->asks_.end()) {
+      return it->second;
     }
-    return std::nullopt;
   }
 
   if (side == Side::BID) {
-    if (this->bids_.contains(price_ticks)) {
-      return this->bids_.at(price_ticks);
+    if (auto it = this->bids_.find(price_ticks); it != this->bids_.end()) {
+      return it->second;
     }
-    return std::nullopt;
   }
 
   return std::nullopt;
