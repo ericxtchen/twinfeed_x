@@ -17,10 +17,9 @@ Then, we start a stopwatch with `std::chrono::steady_clock` and time how long is
 
 After timing, we check for correctness and print the results.
 
-The warmup also makes it ambigious on which data will be in cache.
+The initial population establishes the desired book depth. The subsequent 10,000 untimed updates exercise the update path and reduce cold-start effects before measurement. The benchmark does not explicitly control or flush CPU caches.
 
-Each benchmark consisted of 10 total trials consisting of 5 pairs.
-Odd numbered trials run using `std::map` and even numbered trials run using `std::flat_map`.
+Each benchmark consisted of 10 paired trials per depth where we alternate between using `std::map` and std::flat_map`.
 
 ## Find + Update workload
 The question here was how long does it take to find and update an already existing entry?
@@ -38,7 +37,7 @@ cat results/existing_bid_upsert_20261116_181744.csv
 | 1,024 | 36.31 | 13.82 | 2.64× | 10/10 |
 
 Across all 40 comparisons, `std::flat_map` wins. This is not really that surprising as `std::flat_map` is essentially just a sorted contigious array.
-This allows the container to use binary search instead of naive linear search to find elements.
+Both containers provide logarithmic lookup complexity. However, std::flat_map performs binary search over contiguous key storage, while std::map typically traverses separately allocated tree nodes. Differences in memory layout, locality, and traversal overhead may explain the observed performance advantage. Hardware cache events were not measured in this study.
 There is also the advantage of cache locality for contigious arrays, compared to tree nodes that `std::map` uses, but I didn't collect cache metrics in my benchmarks.
 
 ## Delete and Insert workload
@@ -83,11 +82,12 @@ We can see that `std::map` loses to `std::flat_map` in high indices and vice ver
 The hypothesis is that with low indices, `std::flat_map` has to do big memory operations like copying, which adds substantial overhead.
 Prices are in ascending order.
 
-## Profiling to prove memory copying is hurting `std::flatmap`
+## Profiling position-dependent data movement in `std::flat_map`
 ```bash
 cmake --preset release -B build/profile-flat -DTWINFEED_USE_FLAT_MAP=ON -DCMAKE_CXX_FLAGS_RELEASE="-O3 -g -DNDEBUG"
 cmake --build build/profile-flat --target book_bench --parallel
 ./build/profile-flat/book_bench churn-low
+
 ./build/profile-flat/book_bench churn-high
 ```
 We build with `-O3` and debugging symbols.
