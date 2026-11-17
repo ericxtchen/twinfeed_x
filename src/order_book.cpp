@@ -1,5 +1,5 @@
 #include "../include/order_book.h"
-#include "protocol.h"
+#include "../include/protocol.h"
 #include <optional>
 
 void OrderBook::apply(const Message &message) {

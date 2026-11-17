@@ -2,7 +2,11 @@
 #define ORDER_BOOK_H
 #include "protocol.h"
 #include <cstdint>
+#ifdef TWINFEED_USE_FLAT_MAP
+#include <flat_map>
+#else
 #include <map>
+#endif
 #include <optional>
 
 struct Level {
@@ -29,8 +33,20 @@ public:
                                            std::int64_t price_ticks) const;
 
 private:
-  std::map<std::int64_t, std::uint64_t> bids_;
-  std::map<std::int64_t, std::uint64_t> asks_;
+#ifdef TWINFEED_USE_FLAT_MAP
+      using Levels = std::flat_map<std::int64_t, std::uint64_t>;
+#else
+      using Levels = std::map<std::int64_t, std::uint64_t>;
+#endif
+  Levels bids_;
+  Levels asks_;
+#ifdef TWINFEED_USE_FLAT_MAP
+    static_assert(std::is_same_v<
+        decltype(bids_), std::flat_map<std::int64_t, std::uint64_t>>);
+#else
+    static_assert(std::is_same_v<
+        decltype(bids_), std::map<std::int64_t, std::uint64_t>>);
+#endif
 };
 
 #endif

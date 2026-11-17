@@ -32,9 +32,17 @@ add_library(twinfeed_protocol STATIC src/protocol.cpp)
 target_include_directories(twinfeed_protocol PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(twinfeed_protocol PRIVATE project_options)
 
-# One instrument's price-level book. Reuse the existing protocol types.
+option(TWINFEED_USE_FLAT_MAP "Store book levels in std::flat_map" OFF)
+
 add_library(twinfeed_book STATIC src/order_book.cpp)
 target_link_libraries(twinfeed_book PUBLIC twinfeed_protocol PRIVATE project_options)
+
+if(TWINFEED_USE_FLAT_MAP)
+    target_compile_definitions(twinfeed_book PUBLIC TWINFEED_USE_FLAT_MAP=1)
+endif()
+
+add_executable(book_bench benchmarks/book_bench.cpp)
+target_link_libraries(book_bench PRIVATE twinfeed_book project_options)
 
 include(CTest)
 if(BUILD_TESTING)
