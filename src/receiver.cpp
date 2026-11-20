@@ -1,4 +1,5 @@
 #include "../include/receiver.h"
+#include <algorithm>
 #include <cstdint>
 #include <optional>
 #include <utility>
@@ -22,7 +23,17 @@ void Receiver::on_datagram(const std::span<const std::byte> &msg) {
     if (decoded.session_id != this->active_session_id_) {
         return;
     }
-    if (decoded.seq_num <= last_committed_sequence_number_) return;
+    if (decoded.seq_num <= last_committed_sequence_number_) {
+        const Message& retained = recent_commits_[decoded.seq_num % recent_commits_.size()];
+        if (retained.seq_num == decoded.seq_num && retained != decoded) {
+            state_ = State::Error;
+            notify_status(decoded.seq_num);
+        }
+        return;
+    }
+
+    const bool had_gap = known_gap();
+    highest_observed_sequence_ = std::max(highest_observed_sequence_, decoded.seq_num);
     if (decoded.seq_num - last_committed_sequence_number_ > 1) {
         const auto index = decoded.seq_num & 63;
         const auto bit = 1ULL << index;
@@ -35,15 +46,18 @@ void Receiver::on_datagram(const std::span<const std::byte> &msg) {
             } else {
                 return;                         // Identical buffered copy.
             }
-            if (notify_) notify_(*this, Status{state_, decoded.seq_num});
+            notify_status(decoded.seq_num);
             return;
         }
         buffer_[index] = decoded;
         occupancy_bitmap_ |= bit;
-        return;
+    } else {
+        this->commit(decoded);
+        this->drain();
     }
-    this->commit(decoded);
-    this->drain();
+    if (state_ == State::Running && known_gap() != had_gap) {
+        notify_status(decoded.seq_num);
+    }
 }
 
 std::optional<std::uint64_t> Receiver::quantity_at(std::uint32_t instrument_id, Side side, std::int64_t ticks) const {

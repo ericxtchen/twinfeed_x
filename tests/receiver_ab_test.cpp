@@ -89,8 +89,13 @@ void expect_buffer_failure(const Message& held, const Message& incoming, Receive
     seen.reserve(4);
     auto state_at_status = Receiver::State::Running;
     Receiver receiver{7, [&](const Receiver& view, const Receiver::Notification& notice) {
+        if (const auto* status = std::get_if<Receiver::Status>(&notice)) {
+            // Ordinary gap transitions can precede the terminal transition under test.
+            if (status->state != Receiver::State::NeedsRecovery && status->state != Receiver::State::Error)
+                return;
+            state_at_status = view.state();
+        }
         seen.push_back(notice);
-        if (std::holds_alternative<Receiver::Status>(notice)) state_at_status = view.state();
     }};
 
     receiver.on_datagram(Feed::A, encode(msg1).value());

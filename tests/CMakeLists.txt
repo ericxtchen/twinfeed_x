@@ -40,6 +40,20 @@ add_test(NAME receiver.ab_four_arrivals COMMAND receiver_ab_test)
 add_test(NAME receiver.slot_collision COMMAND receiver_ab_test slot_collision)
 add_test(NAME receiver.conflicting_copy COMMAND receiver_ab_test conflicting_copy)
 
+add_executable(receiver_fault_test receiver_fault_test.cpp ../src/receiver.cpp)
+target_link_libraries(receiver_fault_test PRIVATE twinfeed_book project_options)
+foreach(test_case IN ITEMS full_buffer_gap_closure full_buffer_overflow known_gap
+                           committed_conflict drained_conflict recent_conflict restart seeded_replay)
+    add_test(NAME "receiver.${test_case}" COMMAND receiver_fault_test "${test_case}")
+endforeach()
+
+if(UNIX)
+    add_executable(receiver_udp_loopback_test receiver_udp_loopback_test.cpp ../src/receiver.cpp)
+    target_link_libraries(receiver_udp_loopback_test PRIVATE twinfeed_book project_options)
+    add_test(NAME receiver.udp_loopback COMMAND receiver_udp_loopback_test)
+    set_tests_properties(receiver.udp_loopback PROPERTIES TIMEOUT 10)
+endif()
+
 add_executable(order_book_tests unit/order_book_test.cpp)
 target_link_libraries(order_book_tests PRIVATE twinfeed_book project_options)
 
