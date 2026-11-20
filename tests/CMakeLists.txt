@@ -45,7 +45,8 @@ add_test(NAME receiver.conflicting_copy COMMAND receiver_ab_test conflicting_cop
 add_executable(receiver_fault_test receiver_fault_test.cpp ../src/receiver.cpp)
 target_link_libraries(receiver_fault_test PRIVATE twinfeed_book twinfeed_feed project_options)
 foreach(test_case IN ITEMS full_buffer_gap_closure full_buffer_overflow known_gap
-                           committed_conflict drained_conflict recent_conflict restart seeded_replay retransmission_deadline)
+                           committed_conflict drained_conflict recent_conflict restart seeded_replay retransmission_deadline
+                           live_before_replay replay_before_live)
     add_test(NAME "receiver.${test_case}" COMMAND receiver_fault_test "${test_case}")
 endforeach()
 

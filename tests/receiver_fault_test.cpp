@@ -230,6 +230,49 @@ void retransmission_deadline() {
     require(!poll(), "requested sequence 2 again after recovery");
 }
 
+enum class Copy { LiveB, ReplayReply };
+
+void replay_race(Copy first) {
+    using namespace std::chrono_literals;
+    Replay trace;
+    std::optional<WireMessage> delayed_b;
+    publisher::Feed source{7, 8, [&](Feed leg, const WireMessage& packet) {
+        if (decode(packet).value().seq_num == 4) {
+            if (leg == Feed::B) delayed_b = packet;
+            return;
+        }
+        trace.receiver.on_datagram(leg, packet);
+    }};
+    for (Seq seq = 1; seq <= 5; ++seq) source.publish(event(seq)).value();
+
+    const std::chrono::steady_clock::time_point start{};
+    require(!trace.receiver.poll_retransmission(start, 10us), "requested before gap wait");
+    const auto request = trace.receiver.poll_retransmission(start + 10us, 10us);
+    require(request && request->session_id == 7 && request->first_sequence == 4 &&
+            request->last_sequence == 4, "expected request for session 7, range [4,4]");
+    trace.expect_prefix(3);
+    require(trace.receiver.known_gap(), "outstanding request should leave the gap open");
+    const auto reply = source.replay(*request).value();
+    require(delayed_b && reply.size() == 1 && *delayed_b == reply.front(), "expected two copies of 4");
+
+    auto deliver = [&](Copy copy) {
+        if (copy == Copy::LiveB) trace.receiver.on_datagram(Feed::B, *delayed_b);
+        else trace.receiver.on_datagram(reply.front());
+    };
+    const std::vector<Status> expected_statuses{
+        {Receiver::State::Running, 5, 3, true},
+        {Receiver::State::Running, 4, 5, false}
+    };
+    const auto second = first == Copy::LiveB ? Copy::ReplayReply : Copy::LiveB;
+    for (const auto copy : {first, second}) {
+        deliver(copy);
+        trace.expect_prefix(5);
+        require(trace.receiver.state() == Receiver::State::Running && !trace.receiver.known_gap(),
+                "receiver should be running with the gap closed");
+        require(trace.statuses == expected_statuses, "expected one gap-open and one gap-closed status");
+    }
+}
+
 void committed_conflict(std::initializer_list<Seq> arrivals, Seq disputed) {
     Replay replay;
     for (const Seq seq : arrivals) replay.send(Feed::A, seq);
@@ -314,6 +357,8 @@ int main(int argc, char** argv) {
         else if (name == "full_buffer_overflow") full_buffer_overflow();
         else if (name == "known_gap") known_gap();
         else if (name == "retransmission_deadline") retransmission_deadline();
+        else if (name == "live_before_replay") replay_race(Copy::LiveB);
+        else if (name == "replay_before_live") replay_race(Copy::ReplayReply);
         else if (name == "publisher_replay") publisher_replay();
         else if (name == "committed_conflict") committed_conflict({1}, 1);
         else if (name == "drained_conflict") committed_conflict({2, 1}, 2);
