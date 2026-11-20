@@ -64,3 +64,7 @@ foreach(test_case IN LISTS book_test_cases)
     add_test(NAME "book.${test_case}" COMMAND order_book_tests "${test_case}")
     set_tests_properties("book.${test_case}" PROPERTIES LABELS "unit;book")
 endforeach()
+
+add_executable(receiver_replay_test receiver_replay_test.cpp ../src/receiver.cpp)
+target_link_libraries(receiver_replay_test PRIVATE twinfeed_book project_options)
+add_test(NAME receiver.replay COMMAND receiver_replay_test)
