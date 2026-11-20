@@ -44,6 +44,8 @@ void with_context(const std::string &context, Function function) {
 
 std::string_view error_name(ProtocolError error) {
   switch (error) {
+  case ProtocolError::INVALID_REPLAY_RANGE:
+    return "INVALID_REPLAY_RANGE";
   case ProtocolError::INVALID_SIZE:
     return "INVALID_SIZE";
   case ProtocolError::UNSUPPORTED_VERSION:
@@ -202,6 +204,43 @@ void decode_golden_frames() {
       expect_message(*result, fixture.message);
     });
   }
+}
+
+void replay_request_wire() {
+  const ReplayRequest request{0x0102030405060708ULL, 0x1112131415161718ULL, 0x2122232425262728ULL};
+  constexpr std::uint8_t golden[]{
+      0x00, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+      0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+      0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28};
+  const auto bytes = std::as_bytes(std::span{golden});
+  const auto encoded = encode_replay_request(request);
+  CHECK(encoded && std::ranges::equal(*encoded, bytes));
+  const auto decoded = decode_replay_request(bytes);
+  CHECK(decoded && decoded->session_id == request.session_id);
+  CHECK(decoded->first_sequence == request.first_sequence);
+  CHECK(decoded->last_sequence == request.last_sequence);
+
+  const auto max = std::numeric_limits<std::uint64_t>::max();
+  const auto edge = decode_replay_request(encode_replay_request({0, max, max}).value()).value();
+  CHECK(edge.session_id == 0 && edge.first_sequence == max && edge.last_sequence == max);
+}
+
+void replay_request_rejections() {
+  auto bytes = encode_replay_request({7, 2, 3}).value();
+  for (std::size_t len = 0; len < bytes.size(); ++len)
+    expect_error(decode_replay_request(std::span{bytes}.first(len)), ProtocolError::INVALID_SIZE);
+  std::vector<std::byte> oversized(bytes.begin(), bytes.end());
+  oversized.push_back(std::byte{0});
+  expect_error(decode_replay_request(oversized), ProtocolError::INVALID_SIZE);
+  bytes[1] = std::byte{2};
+  expect_error(decode_replay_request(bytes), ProtocolError::UNSUPPORTED_VERSION);
+  bytes[1] = std::byte{1};
+  bytes[17] = std::byte{0};
+  expect_error(decode_replay_request(bytes), ProtocolError::INVALID_REPLAY_RANGE);
+  bytes[17] = std::byte{4};
+  expect_error(decode_replay_request(bytes), ProtocolError::INVALID_REPLAY_RANGE);
+  expect_error(encode_replay_request({7, 0, 3}), ProtocolError::INVALID_REPLAY_RANGE);
+  expect_error(encode_replay_request({7, 4, 3}), ProtocolError::INVALID_REPLAY_RANGE);
 }
 
 void validate_valid_messages() {
@@ -515,6 +554,8 @@ struct TestCase {
 constexpr TestCase cases[]{
     {"encode_golden_frames", encode_golden_frames},
     {"decode_golden_frames", decode_golden_frames},
+    {"replay_request_wire", replay_request_wire},
+    {"replay_request_rejections", replay_request_rejections},
     {"validate_valid_messages", validate_valid_messages},
     {"round_trip_all_sides_and_operations",
      round_trip_all_sides_and_operations},

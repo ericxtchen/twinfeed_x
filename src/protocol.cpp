@@ -3,7 +3,13 @@
 #include <expected>
 
 namespace {
-void write_be(WireMessage &buf, std::size_t offset, std::uint64_t value,
+constexpr std::uint16_t protocol_version = 1;
+
+bool valid_range(const ReplayRequest& request) {
+  return request.first_sequence != 0 && request.first_sequence <= request.last_sequence;
+}
+
+void write_be(std::span<std::byte> buf, std::size_t offset, std::uint64_t value,
               std::size_t byte_count) {
   for (std::size_t i = 0; i < byte_count; ++i) {
     const auto shift = 8 * (byte_count - 1 - i);
@@ -56,7 +62,7 @@ EncodeResult encode(const Message &message) {
   }
   WireMessage buf{};
 
-  write_be(buf, 0, 1, 2); // version number
+  write_be(buf, 0, protocol_version, 2);
   write_be(buf, 2, message.session_id, 8);
   write_be(buf, 10, message.seq_num, 8);
   write_be(buf, 18, static_cast<std::uint64_t>(message.price_ticks), 8);
@@ -75,7 +81,7 @@ DecodeResult decode(std::span<const std::byte> buf) {
     return std::unexpected(ProtocolError::INVALID_SIZE);
   }
   const auto version = read_be(buf, 0, 2);
-  if (version != 1) {
+  if (version != protocol_version) {
     return std::unexpected(ProtocolError::UNSUPPORTED_VERSION);
   }
 
@@ -96,4 +102,22 @@ DecodeResult decode(std::span<const std::byte> buf) {
   }
 
   return message;
+}
+
+std::expected<WireReplayRequest, ProtocolError> encode_replay_request(const ReplayRequest& request) {
+  if (!valid_range(request)) return std::unexpected(ProtocolError::INVALID_REPLAY_RANGE);
+  WireReplayRequest buf{};
+  write_be(buf, 0, protocol_version, 2);
+  write_be(buf, 2, request.session_id, 8);
+  write_be(buf, 10, request.first_sequence, 8);
+  write_be(buf, 18, request.last_sequence, 8);
+  return buf;
+}
+
+std::expected<ReplayRequest, ProtocolError> decode_replay_request(std::span<const std::byte> buf) {
+  if (buf.size() != replay_request_wire_size) return std::unexpected(ProtocolError::INVALID_SIZE);
+  if (read_be(buf, 0, 2) != protocol_version) return std::unexpected(ProtocolError::UNSUPPORTED_VERSION);
+  ReplayRequest request{read_be(buf, 2, 8), read_be(buf, 10, 8), read_be(buf, 18, 8)};
+  if (!valid_range(request)) return std::unexpected(ProtocolError::INVALID_REPLAY_RANGE);
+  return request;
 }

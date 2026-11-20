@@ -6,6 +6,8 @@ target_link_libraries(protocol_tests PRIVATE twinfeed_protocol project_options)
 set(protocol_test_cases
     encode_golden_frames
     decode_golden_frames
+    replay_request_wire
+    replay_request_rejections
     validate_valid_messages
     round_trip_all_sides_and_operations
     uint64_boundaries
@@ -54,6 +56,13 @@ if(UNIX)
         target_link_libraries(receiver_udp_loopback_test PRIVATE twinfeed_udp)
         add_test(NAME receiver.udp_deadline COMMAND receiver_udp_loopback_test deadline)
         set_tests_properties(receiver.udp_deadline PROPERTIES TIMEOUT 10)
+        find_package(Python3 QUIET COMPONENTS Interpreter)
+        if(Python3_Interpreter_FOUND)
+            add_test(NAME receiver.network_replay COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/network_replay.py
+                $<TARGET_FILE:twinfeed_receiver> $<TARGET_FILE:twinfeed_publisher>)
+            set_tests_properties(receiver.network_replay PROPERTIES TIMEOUT 15)
+        endif()
     else()
         target_sources(receiver_udp_loopback_test PRIVATE ../src/receiver.cpp)
     endif()

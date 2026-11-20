@@ -7,6 +7,7 @@
 #include <span>
 
 constexpr std::size_t wire_size = 40;
+constexpr std::size_t replay_request_wire_size = 26;
 
 // The delivery path is local metadata. Both paths carry the same WireMessage.
 enum class Feed { A, B };
@@ -44,9 +45,11 @@ enum class ProtocolError {
   INVALID_OPERATION,
   INVALID_PRICE,
   UPSERT_WITH_ZERO_QUANTITY,
-  DELETE_WITH_NONZERO_QUANTITY
+  DELETE_WITH_NONZERO_QUANTITY,
+  INVALID_REPLAY_RANGE
 };
 
+using WireReplayRequest = std::array<std::byte, replay_request_wire_size>;
 using WireMessage = std::array<std::byte, wire_size>;
 using EncodeResult = std::expected<WireMessage, ProtocolError>;
 using DecodeResult = std::expected<Message, ProtocolError>;
@@ -55,5 +58,9 @@ std::expected<void, ProtocolError> validate(const Message &message);
 
 EncodeResult encode(const Message &message);
 DecodeResult decode(std::span<const std::byte> bytes);
+
+// Control port, big-endian: u16 version, u64 session, u64 first, u64 last (inclusive).
+std::expected<WireReplayRequest, ProtocolError> encode_replay_request(const ReplayRequest& request);
+std::expected<ReplayRequest, ProtocolError> decode_replay_request(std::span<const std::byte> bytes);
 
 #endif
