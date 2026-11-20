@@ -1,4 +1,5 @@
 #include "protocol.h"
+#include "feed.h"
 #include "receiver.h"
 
 #include <arpa/inet.h>
@@ -91,19 +92,29 @@ void loopback() {
     third.quantity = 0;
     third.operation = Operation::DELETE_LEVEL;
 
-    const auto p1 = encode(first).value(), p2 = encode(second).value(), p3 = encode(third).value();
+    const auto p1 = encode(first).value();
     std::array<std::byte, wire_size + 8> oversized{};
     std::copy(p1.begin(), p1.end(), oversized.begin());
     deliver(Feed::A, oversized);
     if (receiver.last_committed_sequence() != 0 || !updates.empty())
         throw std::runtime_error("oversized datagram was accepted as a valid prefix");
 
-    deliver(Feed::A, p1);
-    deliver(Feed::A, p3);
-    deliver(Feed::B, p3);
+    std::optional<WireMessage> delayed_b2;
+    publisher::Feed source{7, 4, [&](Feed leg, const WireMessage& packet) {
+        const auto seq = decode(packet).value().seq_num;
+        if (seq == 2) {
+            if (leg == Feed::B) delayed_b2 = packet;
+            return;
+        }
+        if (seq == 1 && leg == Feed::B) return;
+        deliver(leg, packet);
+    }};
+    source.publish(first).value();
+    source.publish(second).value();
+    source.publish(third).value();
     if (updates != std::vector<Observation>{{1, 10}})
         throw std::runtime_error("published across a gap or duplicated an update");
-    deliver(Feed::B, p2);
+    deliver(Feed::B, delayed_b2.value());
     if (updates != std::vector<Observation>{{1, 10}, {2, 20}, {3, std::nullopt}} ||
         receiver.last_committed_sequence() != 3 || receiver.quantity_at(101, Side::BID, 100))
         throw std::runtime_error("incorrect loopback commit history or final book");

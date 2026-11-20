@@ -32,6 +32,9 @@ add_library(twinfeed_protocol STATIC src/protocol.cpp)
 target_include_directories(twinfeed_protocol PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(twinfeed_protocol PRIVATE project_options)
 
+add_library(twinfeed_feed STATIC src/feed.cpp)
+target_link_libraries(twinfeed_feed PUBLIC twinfeed_protocol PRIVATE project_options)
+
 option(TWINFEED_USE_FLAT_MAP "Store book levels in std::flat_map" OFF)
 
 add_library(twinfeed_book STATIC src/order_book.cpp)

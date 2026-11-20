@@ -1,7 +1,9 @@
 #include "receiver.h"
+#include "feed.h"
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstdint>
 #include <initializer_list>
 #include <iostream>
@@ -164,6 +166,70 @@ void known_gap() {
             replay.statuses.back().committed == 5, "missing gap-closed status at sequence 5");
 }
 
+// Deliver both live paths except for sequence 2. The publisher still retains it.
+publisher::Feed source_missing_live_two(Replay& replay) {
+    return {7, 4, [&replay](Feed leg, const WireMessage& packet) {
+        if (decode(packet).value().seq_num != 2) replay.receiver.on_datagram(leg, packet);
+    }};
+}
+
+void publisher_replay() {
+    Replay replay;
+    auto source = source_missing_live_two(replay);
+    for (Seq seq = 1; seq <= 3; ++seq) source.publish(event(seq)).value();
+    replay.expect_prefix(1);
+    require(replay.receiver.known_gap(), "live loss of sequence 2 should open a gap");
+    const auto packets = source.replay({7, 2, 2}).value();
+    require(packets.size() == 1 && packets.front() == encode(event(2)).value(), "wrong replay response");
+    replay.receiver.on_datagram(packets.front());
+    replay.expect_prefix(3);
+    require(!replay.receiver.known_gap(), "publisher replay should close the gap");
+}
+
+void retransmission_deadline() {
+    using namespace std::chrono_literals;
+    constexpr auto gap_wait = 10us;
+    std::chrono::steady_clock::time_point now{};
+    Replay replay;
+    auto source = source_missing_live_two(replay);
+    auto poll = [&] { return replay.receiver.poll_retransmission(now, gap_wait); };
+
+    source.publish(event(1)).value();
+    require(!poll(), "unexpected replay request before a gap");
+    now += 100us;
+    source.publish(event(2)).value();  // Retained by the publisher, dropped on both paths.
+    source.publish(event(3)).value();
+    replay.expect_prefix(1);
+    require(replay.receiver.known_gap(), "expected a gap at sequence 2");
+    require(!poll(), "requested replay as soon as the gap opened");
+
+    now += gap_wait - 1us;
+    require(!poll(), "requested replay before the gap deadline");
+    now += 1us;
+    const auto request = poll();
+    require(request.has_value(), "gap deadline: expected one replay request for session 7, range [2, 2]");
+    require(request->session_id == 7 && request->first_sequence == 2 && request->last_sequence == 2,
+            "incorrect replay session or inclusive range");
+    require(!poll(), "polling twice at the deadline emitted a duplicate request");
+    replay.expect_prefix(1);
+    require(replay.receiver.known_gap(), "issuing the request cleared the gap");
+
+    // The replay source supplies the requested wire message to the same sequencer as A/B.
+    const auto response = source.replay(*request).value();
+    for (const auto& packet : response) replay.receiver.on_datagram(packet);
+    replay.expect_prefix(3);  // Includes update order, the book at each callback, and just the bootstrap reset.
+    require(!replay.receiver.known_gap() && replay.receiver.state() == Receiver::State::Running,
+            "replay of 2 should drain 3 and close the gap");
+    require(!poll(), "requested replay after the gap closed");
+
+    const auto status_count = replay.statuses.size();
+    replay.send(Feed::B, 2);
+    replay.expect_prefix(3);
+    require(replay.statuses.size() == status_count, "late live copy emitted a status");
+    now += gap_wait;
+    require(!poll(), "requested sequence 2 again after recovery");
+}
+
 void committed_conflict(std::initializer_list<Seq> arrivals, Seq disputed) {
     Replay replay;
     for (const Seq seq : arrivals) replay.send(Feed::A, seq);
@@ -247,6 +313,8 @@ int main(int argc, char** argv) {
         if (name == "full_buffer_gap_closure") full_buffer_gap_closure();
         else if (name == "full_buffer_overflow") full_buffer_overflow();
         else if (name == "known_gap") known_gap();
+        else if (name == "retransmission_deadline") retransmission_deadline();
+        else if (name == "publisher_replay") publisher_replay();
         else if (name == "committed_conflict") committed_conflict({1}, 1);
         else if (name == "drained_conflict") committed_conflict({2, 1}, 2);
         else if (name == "recent_conflict") committed_conflict({1, 2}, 1);

@@ -3,13 +3,13 @@
 
 #include "order_book.h"
 #include "protocol.h"
+#include <chrono>
+#include <optional>
 #include <functional>
 #include <unordered_map>
 #include <cstdint>
 #include <variant>
 #include <array>
-
-enum class Feed { A, B };
 
 class Receiver {
 public:
@@ -29,6 +29,12 @@ public:
     // called synchornously and must not throw
     using Callback = std::function<void(const Receiver&, const Notification&)>;
 
+    using ReplayRequest = ::ReplayRequest;
+    // Poll after processing an arrival and on timer ticks, using the same monotonic clock.
+    // this will later be refactored into a more event/interrupt driven over another thread
+    [[nodiscard]] std::optional<ReplayRequest> poll_retransmission(
+        std::chrono::steady_clock::time_point now, std::chrono::steady_clock::duration gap_wait);
+
     explicit Receiver(std::uint64_t active_session_id, Callback notify = {});
     void on_datagram(const std::span<const std::byte> &msg);
     // Both feed copies currently use the same sequencing path.
@@ -45,6 +51,10 @@ private:
     uint64_t active_session_id_;
     uint64_t last_committed_sequence_number_ = 0;
     std::uint64_t highest_observed_sequence_ = 0;
+    // gap_first_polled_at_ represents the first time we called poll_retransmission
+    // this is changed against now and gap_wait to see if we have to ask for retransmission from a feed
+    std::optional<std::chrono::steady_clock::time_point> gap_first_polled_at_;
+    std::uint64_t replay_requested_through_ = 0;
     // A full sequence number distinguishes a retained copy from an overwritten slot.
     // this saves our most recent 64 commits
     // this allows us to buy 64 commits worth of detection coverage

@@ -42,7 +42,7 @@ void Receiver::on_datagram(const std::span<const std::byte> &msg) {
             if (held.seq_num != decoded.seq_num) {
                 state_ = State::NeedsRecovery;   // Different sequences need the same slot.
             } else if (held != decoded) {
-                state_ = State::Error;           // Contradictory copies of one sequence.
+              state_ = State::Error;           // Contradictory copies of one sequence.
             } else {
                 return;                         // Identical buffered copy.
             }
@@ -56,8 +56,28 @@ void Receiver::on_datagram(const std::span<const std::byte> &msg) {
         this->drain();
     }
     if (state_ == State::Running && known_gap() != had_gap) {
+        gap_first_polled_at_.reset();
         notify_status(decoded.seq_num);
     }
+}
+
+std::optional<Receiver::ReplayRequest> Receiver::poll_retransmission(std::chrono::steady_clock::time_point now, std::chrono::steady_clock::duration gap_wait) {
+    if (state_ != State::Running || !known_gap()) return std::nullopt;
+        const auto first_missing = last_committed_sequence_number_ + 1;
+    if (first_missing <= replay_requested_through_) return std::nullopt;
+
+    if (!gap_first_polled_at_) gap_first_polled_at_ = now;
+    if (now - *gap_first_polled_at_ < gap_wait) return std::nullopt;
+
+    // Request only the contiguous hole before the lowest buffered sequence.
+    auto first_buffered = highest_observed_sequence_;
+    for (std::size_t i = 0; i < buffer_.size(); ++i) {
+        if (occupancy_bitmap_ & (1ULL << i))
+            first_buffered = std::min(first_buffered, buffer_[i].seq_num);
+    }
+    replay_requested_through_ = first_buffered - 1;
+    gap_first_polled_at_.reset();
+    return ReplayRequest{active_session_id_, first_missing, replay_requested_through_};    
 }
 
 std::optional<std::uint64_t> Receiver::quantity_at(std::uint32_t instrument_id, Side side, std::int64_t ticks) const {

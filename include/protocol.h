@@ -8,6 +8,15 @@
 
 constexpr std::size_t wire_size = 40;
 
+// The delivery path is local metadata. Both paths carry the same WireMessage.
+enum class Feed { A, B };
+
+struct ReplayRequest {
+  std::uint64_t session_id;
+  std::uint64_t first_sequence;
+  std::uint64_t last_sequence; // Inclusive.
+};
+
 enum class Side : std::uint8_t { BID = 0, ASK = 1 };
 
 enum class Operation : std::uint8_t { UPSERT_LEVEL = 0, DELETE_LEVEL = 1 };
