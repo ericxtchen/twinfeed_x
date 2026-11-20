@@ -47,6 +47,11 @@ endif()
 add_executable(book_bench benchmarks/book_bench.cpp)
 target_link_libraries(book_bench PRIVATE twinfeed_book project_options)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    add_library(twinfeed_udp STATIC src/udp_receiver.cpp src/receiver.cpp)
+    target_link_libraries(twinfeed_udp PUBLIC twinfeed_book PRIVATE project_options)
+endif()
+
 include(CTest)
 if(BUILD_TESTING)
     add_subdirectory(tests)

@@ -1,5 +1,6 @@
 #include "../include/receiver.h"
 #include <algorithm>
+#include <chrono>
 #include <cstdint>
 #include <optional>
 #include <utility>
@@ -61,6 +62,16 @@ void Receiver::on_datagram(const std::span<const std::byte> &msg) {
     }
 }
 
+std::optional<std::chrono::steady_clock::duration> Receiver::retransmission_wait(
+    std::chrono::steady_clock::time_point now, std::chrono::steady_clock::duration gap_wait) const {
+    if (state_ != State::Running || !known_gap()) return std::nullopt;
+    if (last_committed_sequence_number_ < replay_requested_through_) return std::nullopt;
+    if (!gap_first_polled_at_) return std::chrono::steady_clock::duration::zero();
+    const auto elapsed = now - *gap_first_polled_at_;
+    if (elapsed >= gap_wait) return std::chrono::steady_clock::duration::zero();
+    return gap_wait - elapsed;
+}
+
 std::optional<Receiver::ReplayRequest> Receiver::poll_retransmission(std::chrono::steady_clock::time_point now, std::chrono::steady_clock::duration gap_wait) {
     if (state_ != State::Running || !known_gap()) return std::nullopt;
         const auto first_missing = last_committed_sequence_number_ + 1;
@@ -78,6 +89,13 @@ std::optional<Receiver::ReplayRequest> Receiver::poll_retransmission(std::chrono
     replay_requested_through_ = first_buffered - 1;
     gap_first_polled_at_.reset();
     return ReplayRequest{active_session_id_, first_missing, replay_requested_through_};    
+}
+
+std::optional<std::chrono::steady_clock::time_point> Receiver::next_retransmission_deadline(std::chrono::steady_clock::duration gap_wait) const {
+    if (state_ != State::Running || !known_gap() || !gap_first_polled_at_) {
+        return std::nullopt;
+    }
+    return *gap_first_polled_at_ + gap_wait;
 }
 
 std::optional<std::uint64_t> Receiver::quantity_at(std::uint32_t instrument_id, Side side, std::int64_t ticks) const {

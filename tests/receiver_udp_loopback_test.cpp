@@ -1,6 +1,9 @@
 #include "protocol.h"
 #include "feed.h"
 #include "receiver.h"
+#ifdef __linux__
+#include "udp_receiver.h"
+#endif
 
 #include <arpa/inet.h>
 #include <poll.h>
@@ -14,6 +17,7 @@
 #include <iostream>
 #include <optional>
 #include <stdexcept>
+#include <string_view>
 #include <system_error>
 #include <vector>
 
@@ -47,8 +51,8 @@ void publish(const Socket& sender, const sockaddr_in& dest, std::span<const std:
     if (static_cast<std::size_t>(sent) != packet.size()) throw std::runtime_error("incomplete datagram");
 }
 
-// Test driver for the existing byte-ingest API. Replace this call with the shared
-// receive step when the UDP application is added.
+#ifndef __linux__
+// The portable loopback test also runs on systems without Linux ppoll().
 Feed receive_one(const Socket& a, const Socket& b, Receiver& receiver) {
     std::array<pollfd, 2> fds{{{a.fd, POLLIN, 0}, {b.fd, POLLIN, 0}}};
     const int ready = ::poll(fds.data(), fds.size(), 1000);
@@ -64,6 +68,7 @@ Feed receive_one(const Socket& a, const Socket& b, Receiver& receiver) {
     }
     throw std::runtime_error("no loopback datagram readable before deadline");
 }
+#endif
 
 void loopback() {
     Socket a, b, sender;
@@ -80,7 +85,12 @@ void loopback() {
     auto deliver = [&](Feed feed, std::span<const std::byte> packet) {
         publish(sender, feed == Feed::A ? dest_a : dest_b, packet);
         // Process each arrival before sending the next. Two sockets have no shared arrival order.
+#ifdef __linux__
+        if (receive_once(receiver, a.fd, b.fd, std::chrono::hours{1}))
+            throw std::runtime_error("unexpected replay request");
+#else
         if (receive_one(a, b, receiver) != feed) throw std::runtime_error("incorrect feed");
+#endif
     };
     const Message first{.session_id = 7, .seq_num = 1, .price_ticks = 100, .quantity = 10,
                         .instrument_id = 101, .side = Side::BID, .operation = Operation::UPSERT_LEVEL};
@@ -119,11 +129,54 @@ void loopback() {
         receiver.last_committed_sequence() != 3 || receiver.quantity_at(101, Side::BID, 100))
         throw std::runtime_error("incorrect loopback commit history or final book");
 }
+#ifdef __linux__
+void backlog_and_deadline() {
+    Socket a, b, sender;
+    const auto dest_a = bind_loopback(a);
+    const auto dest_b = bind_loopback(b);
+    std::vector<std::uint64_t> updates;
+    unsigned resets = 0;
+    Receiver receiver{7, [&](const Receiver&, const Receiver::Notification& notice) {
+        if (const auto* msg = std::get_if<Message>(&notice)) updates.push_back(msg->seq_num);
+        if (std::holds_alternative<Receiver::Reset>(notice)) ++resets;
+    }};
+    auto step = [&] { return receive_once(receiver, a.fd, b.fd, std::chrono::milliseconds{5}); };
+    publisher::Feed source{7, 8, [&](Feed leg, const WireMessage& packet) {
+        const auto seq = decode(packet).value().seq_num;
+        if (seq == 4) return;  // Both live copies are lost.
+        if (leg == (seq == 2 ? Feed::B : Feed::A))
+            publish(sender, leg == Feed::A ? dest_a : dest_b, packet);
+    }};
+    const Message update{0, 0, 100, 10, 101, Side::BID, Operation::UPSERT_LEVEL};
+    for (int i = 0; i < 3; ++i) source.publish(update).value();
+    // A has 1 and 3 queued. B already has 2. Serve one from each ready socket.
+    if (step() || receiver.last_committed_sequence() != 2 || receiver.known_gap())
+        throw std::runtime_error("first turn should serve A1 and B2");
+    if (step() || receiver.last_committed_sequence() != 3)
+        throw std::runtime_error("second turn should consume queued A3");
+
+    source.publish(update).value();  // 4 retained for replay only
+    source.publish(update).value();  // 5 reveals the gap
+    if (step() || !receiver.known_gap()) throw std::runtime_error("expected a gap at 4");
+    const auto request = step();    // No further UDP input. Only the deadline can wake this call.
+    if (!request || request->session_id != 7 || request->first_sequence != 4 ||
+        request->last_sequence != 4 || receiver.last_committed_sequence() != 3)
+        throw std::runtime_error("timeout should request [4,4] without advancing the book");
+    const auto response = source.replay(*request).value();
+    for (const auto& packet : response) receiver.on_datagram(packet);
+    if (updates != std::vector<std::uint64_t>{1, 2, 3, 4, 5} || resets != 1 || receiver.known_gap())
+        throw std::runtime_error("replay should commit 4 and drain 5");
+}
+#endif
 } // namespace
 
-int main() {
+int main(int argc, [[maybe_unused]] char** argv) {
     try {
-        loopback();
+        if (argc == 1) loopback();
+#ifdef __linux__
+        else if (argc == 2 && std::string_view(argv[1]) == "deadline") backlog_and_deadline();
+#endif
+        else return 2;
     } catch (const std::exception& error) {
         std::cerr << error.what() << '\n';
         return 1;

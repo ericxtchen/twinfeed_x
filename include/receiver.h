@@ -30,6 +30,8 @@ public:
     using Callback = std::function<void(const Receiver&, const Notification&)>;
 
     using ReplayRequest = ::ReplayRequest;
+    [[nodiscard]] std::optional<std::chrono::steady_clock::duration> retransmission_wait(
+        std::chrono::steady_clock::time_point now, std::chrono::steady_clock::duration gap_wait) const;
     // Poll after processing an arrival and on timer ticks, using the same monotonic clock.
     // this will later be refactored into a more event/interrupt driven over another thread
     [[nodiscard]] std::optional<ReplayRequest> poll_retransmission(
@@ -47,6 +49,7 @@ public:
     uint64_t last_committed_sequence() const {
         return last_committed_sequence_number_; 
     }
+    std::optional<std::chrono::steady_clock::time_point> next_retransmission_deadline(std::chrono::steady_clock::duration gap_wait) const;
 private:
     uint64_t active_session_id_;
     uint64_t last_committed_sequence_number_ = 0;
