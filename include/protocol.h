@@ -20,6 +20,8 @@ struct Message {
   std::uint32_t instrument_id;
   Side side;           // BID | ASK
   Operation operation; // UPSERT_LEVEL | DELETE_LEVEL
+
+  bool operator==(const Message&) const = default;
 };
 
 enum class ProtocolError {
