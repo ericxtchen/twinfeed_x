@@ -1,0 +1,79 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 9  of event 'cpu-clock:u'
+# Event count (approx.): 45226125
+#
+# Overhead       Samples  Command          Shared Object       Symbol                                                                                                                                                                                                                                                                                                                       
+# ........  ............  ...............  ..................  .............................................................................................................................................................................................................................................................................................................................
+#
+    44.44%             4  udp_bench_recei  [vdso]              [.] 0x0000000000000b1e
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               std::chrono::_V2::steady_clock::now()
+               clock_gettime@@GLIBC_2.17
+               0x7f49e59c7b1e
+
+    22.22%             2  udp_bench_recei  libc.so.6           [.] ppoll
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               ppoll
+               syscall_cancel (inlined)
+               internal_syscall_cancel (inlined)
+
+    11.11%             1  udp_bench_recei  [vdso]              [.] 0x0000000000000b23
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               std::chrono::_V2::steady_clock::now()
+               clock_gettime@@GLIBC_2.17
+               0x7f49e59c7b23
+
+    11.11%             1  udp_bench_recei  libc.so.6           [.] __recvmmsg
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               (anonymous namespace)::read_ready_batch(Receiver&, pollfd, Feed, (anonymous namespace)::UdpBatch&, UdpReadOptions const*)
+               __recvmmsg
+               recvmmsg_syscall (inlined)
+               syscall_cancel (inlined)
+               internal_syscall_cancel (inlined)
+
+    11.11%             1  udp_bench_recei  udp_bench_receiver  [.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, long, std::less<void> >(__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, __gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, long, std::less<void>)
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               bench::percentiles(std::basic_string_view<char, std::char_traits<char> >, std::vector<long, std::allocator<long> >&)
+               void std::sort<__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > > >(__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, __gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >) (inlined)
+               void std::__sort<__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, std::less<void> >(__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, __gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, std::less<void>) (inlined)
+               void std::__introsort_loop<__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, long, std::less<void> >(__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, __gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, long, std::less<void>)
+               __gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > > std::__unguarded_partition_pivot<__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, std::less<void> >(__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, __gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, std::less<void>) (inlined)
+               __gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > > std::__unguarded_partition<__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, std::less<void> >(__gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, __gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, __gnu_cxx::__normal_iterator<long*, std::vector<long, std::allocator<long> > >, std::less<void>) (inlined)
+
+
+
+#
+# (Tip: To record callchains for each sample: perf record -g)
+#

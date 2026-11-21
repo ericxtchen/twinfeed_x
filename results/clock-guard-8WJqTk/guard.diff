@@ -1,0 +1,12 @@
+--- control/src/udp_receiver.cpp
++++ guard/src/udp_receiver.cpp
+@@ -127,6 +127,9 @@
+     // add this guard because Clock::now() is killing performance
+     // if there is no gap, poll_retransmission() will just return with nothing
+     // so lets try to remove a source of Clock::now() calls
++    if (!receiver.known_gap()) {
++        return std::nullopt;
++    }
+     return receiver.poll_retransmission(Clock::now(), gap_wait);
+ }
+ 

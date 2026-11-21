@@ -1,0 +1,23 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 15  of event 'cpu-clock:u'
+# Event count (approx.): 75376875
+#
+# Overhead       Samples  Command          Shared Object        Symbol                                                                                                                      
+# ........  ............  ...............  ...................  ............................................................................................................................
+#
+    46.67%             7  udp_bench_recei  [vdso]               [.] 0x0000000000000b1e
+    13.33%             2  udp_bench_recei  libstdc++.so.6.0.36  [.] std::chrono::_V2::steady_clock::now()
+    13.33%             2  udp_bench_recei  udp_bench_receiver   [.] receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+     6.67%             1  udp_bench_recei  [vdso]               [.] 0x0000000000000b23
+     6.67%             1  udp_bench_recei  libc.so.6            [.] __memset_avx2_unaligned_erms
+     6.67%             1  udp_bench_recei  libstdc++.so.6.0.36  [.] clock_gettime@plt
+     6.67%             1  udp_bench_recei  udp_bench_receiver   [.] std::chrono::_V2::steady_clock::now()@plt
+
+
+#
+# (Tip: List events using substring match: perf list <keyword>)
+#

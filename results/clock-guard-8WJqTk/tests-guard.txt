@@ -1,0 +1,142 @@
+Test project /home/erxchen/Projects/twinfeed_x/results/clock-guard-8WJqTk/build/guard-debug
+      Start  1: protocol.encode_golden_frames
+ 1/66 Test  #1: protocol.encode_golden_frames ..................   Passed    0.00 sec
+      Start  2: protocol.decode_golden_frames
+ 2/66 Test  #2: protocol.decode_golden_frames ..................   Passed    0.00 sec
+      Start  3: protocol.replay_request_wire
+ 3/66 Test  #3: protocol.replay_request_wire ...................   Passed    0.00 sec
+      Start  4: protocol.replay_request_rejections
+ 4/66 Test  #4: protocol.replay_request_rejections .............   Passed    0.00 sec
+      Start  5: protocol.validate_valid_messages
+ 5/66 Test  #5: protocol.validate_valid_messages ...............   Passed    0.00 sec
+      Start  6: protocol.round_trip_all_sides_and_operations
+ 6/66 Test  #6: protocol.round_trip_all_sides_and_operations ...   Passed    0.00 sec
+      Start  7: protocol.uint64_boundaries
+ 7/66 Test  #7: protocol.uint64_boundaries .....................   Passed    0.00 sec
+      Start  8: protocol.instrument_boundaries
+ 8/66 Test  #8: protocol.instrument_boundaries .................   Passed    0.00 sec
+      Start  9: protocol.price_boundaries
+ 9/66 Test  #9: protocol.price_boundaries ......................   Passed    0.00 sec
+      Start 10: protocol.decode_empty
+10/66 Test #10: protocol.decode_empty ..........................   Passed    0.00 sec
+      Start 11: protocol.decode_all_truncated_lengths
+11/66 Test #11: protocol.decode_all_truncated_lengths ..........   Passed    0.00 sec
+      Start 12: protocol.decode_oversized
+12/66 Test #12: protocol.decode_oversized ......................   Passed    0.00 sec
+      Start 13: protocol.decode_concatenated_frames
+13/66 Test #13: protocol.decode_concatenated_frames ............   Passed    0.00 sec
+      Start 14: protocol.decode_unsupported_versions
+14/66 Test #14: protocol.decode_unsupported_versions ...........   Passed    0.06 sec
+      Start 15: protocol.reject_zero_sequence
+15/66 Test #15: protocol.reject_zero_sequence ..................   Passed    0.00 sec
+      Start 16: protocol.reject_invalid_sides
+16/66 Test #16: protocol.reject_invalid_sides ..................   Passed    0.00 sec
+      Start 17: protocol.reject_invalid_operations
+17/66 Test #17: protocol.reject_invalid_operations .............   Passed    0.00 sec
+      Start 18: protocol.reject_zero_price
+18/66 Test #18: protocol.reject_zero_price .....................   Passed    0.00 sec
+      Start 19: protocol.reject_negative_one_price
+19/66 Test #19: protocol.reject_negative_one_price .............   Passed    0.00 sec
+      Start 20: protocol.reject_minimum_signed_price
+20/66 Test #20: protocol.reject_minimum_signed_price ...........   Passed    0.00 sec
+      Start 21: protocol.reject_zero_upsert_quantity
+21/66 Test #21: protocol.reject_zero_upsert_quantity ...........   Passed    0.00 sec
+      Start 22: protocol.reject_nonzero_delete_quantity
+22/66 Test #22: protocol.reject_nonzero_delete_quantity ........   Passed    0.00 sec
+      Start 23: protocol.allow_zero_session_and_instrument
+23/66 Test #23: protocol.allow_zero_session_and_instrument .....   Passed    0.00 sec
+      Start 24: protocol.decode_unaligned_buffer
+24/66 Test #24: protocol.decode_unaligned_buffer ...............   Passed    0.00 sec
+      Start 25: protocol.deterministic_round_trips
+25/66 Test #25: protocol.deterministic_round_trips .............   Passed    0.03 sec
+      Start 26: receiver.ab_four_arrivals
+26/66 Test #26: receiver.ab_four_arrivals ......................   Passed    0.00 sec
+      Start 27: receiver.slot_collision
+27/66 Test #27: receiver.slot_collision ........................   Passed    0.00 sec
+      Start 28: receiver.conflicting_copy
+28/66 Test #28: receiver.conflicting_copy ......................   Passed    0.00 sec
+      Start 29: receiver.full_buffer_gap_closure
+29/66 Test #29: receiver.full_buffer_gap_closure ...............   Passed    0.00 sec
+      Start 30: receiver.full_buffer_overflow
+30/66 Test #30: receiver.full_buffer_overflow ..................   Passed    0.00 sec
+      Start 31: receiver.known_gap
+31/66 Test #31: receiver.known_gap .............................   Passed    0.00 sec
+      Start 32: receiver.committed_conflict
+32/66 Test #32: receiver.committed_conflict ....................   Passed    0.00 sec
+      Start 33: receiver.drained_conflict
+33/66 Test #33: receiver.drained_conflict ......................   Passed    0.00 sec
+      Start 34: receiver.recent_conflict
+34/66 Test #34: receiver.recent_conflict .......................   Passed    0.00 sec
+      Start 35: receiver.restart
+35/66 Test #35: receiver.restart ...............................   Passed    0.00 sec
+      Start 36: receiver.seeded_replay
+36/66 Test #36: receiver.seeded_replay .........................   Passed    0.02 sec
+      Start 37: receiver.retransmission_deadline
+37/66 Test #37: receiver.retransmission_deadline ...............   Passed    0.00 sec
+      Start 38: receiver.live_before_replay
+38/66 Test #38: receiver.live_before_replay ....................   Passed    0.00 sec
+      Start 39: receiver.replay_before_live
+39/66 Test #39: receiver.replay_before_live ....................   Passed    0.00 sec
+      Start 40: receiver.udp_deadline
+40/66 Test #40: receiver.udp_deadline ..........................   Passed    0.01 sec
+      Start 41: receiver.network_replay
+41/66 Test #41: receiver.network_replay ........................   Passed    0.04 sec
+      Start 42: benchmark.udp_accounting
+42/66 Test #42: benchmark.udp_accounting .......................   Passed    3.61 sec
+      Start 43: receiver.udp_loopback
+43/66 Test #43: receiver.udp_loopback ..........................   Passed    0.01 sec
+      Start 44: publisher.replay_window
+44/66 Test #44: publisher.replay_window ........................   Passed    0.00 sec
+      Start 45: publisher.replay_after_live_loss
+45/66 Test #45: publisher.replay_after_live_loss ...............   Passed    0.00 sec
+      Start 46: book.empty_book
+46/66 Test #46: book.empty_book ................................   Passed    0.00 sec
+      Start 47: book.bid_only_lookup_regression
+47/66 Test #47: book.bid_only_lookup_regression ................   Passed    0.00 sec
+      Start 48: book.ask_only_bid_query_regression
+48/66 Test #48: book.ask_only_bid_query_regression .............   Passed    0.00 sec
+      Start 49: book.ask_lookup_and_absent_price
+49/66 Test #49: book.ask_lookup_and_absent_price ...............   Passed    0.00 sec
+      Start 50: book.same_price_sides_are_independent
+50/66 Test #50: book.same_price_sides_are_independent ..........   Passed    0.00 sec
+      Start 51: book.highest_bid_wins
+51/66 Test #51: book.highest_bid_wins ..........................   Passed    0.00 sec
+      Start 52: book.lowest_ask_wins
+52/66 Test #52: book.lowest_ask_wins ...........................   Passed    0.00 sec
+      Start 53: book.upsert_replaces_quantity
+53/66 Test #53: book.upsert_replaces_quantity ..................   Passed    0.00 sec
+      Start 54: book.delete_best_reveals_next
+54/66 Test #54: book.delete_best_reveals_next ..................   Passed    0.00 sec
+      Start 55: book.delete_nonbest_preserves_best
+55/66 Test #55: book.delete_nonbest_preserves_best .............   Passed    0.00 sec
+      Start 56: book.delete_last_level_empties_side
+56/66 Test #56: book.delete_last_level_empties_side ............   Passed    0.00 sec
+      Start 57: book.missing_deletes_are_noops
+57/66 Test #57: book.missing_deletes_are_noops .................   Passed    0.00 sec
+      Start 58: book.repeated_absolute_updates
+58/66 Test #58: book.repeated_absolute_updates .................   Passed    0.00 sec
+      Start 59: book.delete_then_reinsert
+59/66 Test #59: book.delete_then_reinsert ......................   Passed    0.00 sec
+      Start 60: book.queries_do_not_create_levels
+60/66 Test #60: book.queries_do_not_create_levels ..............   Passed    0.00 sec
+      Start 61: book.sparse_and_large_prices
+61/66 Test #61: book.sparse_and_large_prices ...................   Passed    0.00 sec
+      Start 62: book.quantity_boundaries
+62/66 Test #62: book.quantity_boundaries .......................   Passed    0.00 sec
+      Start 63: book.separate_books_are_independent
+63/66 Test #63: book.separate_books_are_independent ............   Passed    0.00 sec
+      Start 64: book.documented_bid_trace
+64/66 Test #64: book.documented_bid_trace ......................   Passed    0.00 sec
+      Start 65: book.deterministic_model_replay
+65/66 Test #65: book.deterministic_model_replay ................   Passed    0.85 sec
+      Start 66: receiver.replay
+66/66 Test #66: receiver.replay ................................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 66
+
+Label Time Summary:
+book        =   0.91 sec*proc (20 tests)
+protocol    =   0.14 sec*proc (25 tests)
+unit        =   1.06 sec*proc (45 tests)
+
+Total Test time (real) =   4.81 sec

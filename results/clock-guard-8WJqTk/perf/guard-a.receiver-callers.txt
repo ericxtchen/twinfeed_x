@@ -1,0 +1,33 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 2  of event 'cpu-clock:u'
+# Event count (approx.): 10050250
+#
+# Overhead       Samples  Command          Shared Object     Symbol                
+# ........  ............  ...............  ................  ......................
+#
+   100.00%             2  udp_bench_recei  [vdso]            [.] 0x0000000000000b1e
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               |          
+               |--0.26%--std::chrono::_V2::steady_clock::now()
+               |          clock_gettime@@GLIBC_2.17
+               |          0x7f1291319b1e
+               |          
+                --0.26%--receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+                          std::chrono::_V2::steady_clock::now()
+                          clock_gettime@@GLIBC_2.17
+                          0x7f1291319b1e
+
+
+
+#
+# (Tip: To show assembler sample context control flow use perf record -b / perf report --samples 10 and then browse context)
+#

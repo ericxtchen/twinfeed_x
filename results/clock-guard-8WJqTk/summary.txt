@@ -1,0 +1,20 @@
+Mode a | receiver CPU ns / in-window commit
+pair 1: control=clean guard=clean  guard minus control = -749.46
+pair 2: control=clean guard=clean  guard minus control = -1769.81
+pair 3: control=clean guard=clean  guard minus control = -142.36
+pair 4: control=clean guard=clean  guard minus control = -542.20
+pair 5: control=clean guard=clean  guard minus control = -1616.51
+pair 6: control=clean guard=clean  guard minus control = -1336.82
+clean trials: control 6/6, guard 6/6
+median delta -1043.14; range -1769.81 to -142.36; guard used less CPU in 6/6 clean pairs
+
+Mode ab | receiver CPU ns / in-window commit
+pair 1: control=clean guard=clean  guard minus control = -2909.59
+pair 2: control=clean guard=clean  guard minus control = -2864.30
+pair 3: control=clean guard=clean  guard minus control = -3016.58
+pair 4: control=clean guard=clean  guard minus control = -2876.38
+pair 5: control=clean guard=clean  guard minus control = -4044.51
+pair 6: control=clean guard=clean  guard minus control = -3063.69
+clean trials: control 6/6, guard 6/6
+median delta -2963.08; range -4044.51 to -2864.30; guard used less CPU in 6/6 clean pairs
+

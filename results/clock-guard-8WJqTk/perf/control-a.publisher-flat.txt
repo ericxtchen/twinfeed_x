@@ -1,0 +1,23 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 321  of event 'cpu-clock:u'
+# Event count (approx.): 1613065125
+#
+# Overhead       Samples  Command          Shared Object        Symbol                                                                                                                                                              
+# ........  ............  ...............  ...................  ....................................................................................................................................................................
+#
+    75.39%           242  udp_bench_publi  [vdso]               [.] 0x0000000000000b1e
+     4.67%            15  udp_bench_publi  libc.so.6            [.] clock_gettime@@GLIBC_2.17
+     4.67%            15  udp_bench_publi  udp_bench_publisher  [.] main
+     4.05%            13  udp_bench_publi  libc.so.6            [.] __libc_sendto
+     3.43%            11  udp_bench_publi  [vdso]               [.] 0x0000000000000b23
+     3.43%            11  udp_bench_publi  libstdc++.so.6.0.36  [.] std::chrono::_V2::steady_clock::now()
+     1.56%             5  udp_bench_publi  udp_bench_publisher  [.] std::_Function_handler<void (Feed, std::array<std::byte, 40ul> const&), main::$_0>::_M_invoke(std::_Any_data const&, Feed&&, std::array<std::byte, 40ul> const&)
+
+
+#
+# (Tip: List events using substring match: perf list <keyword>)
+#

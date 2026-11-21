@@ -1,0 +1,29 @@
+Linux fedora 7.3.4-300.fc45.x86_64 #1 SMP PREEMPT_DYNAMIC Wed Nov 11 00:15:32 UTC 2026 x86_64 GNU/Linux
+clang version 23.1.5 (Fedora 23.1.5-2.fc45)
+Target: x86_64-redhat-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+Configuration file: /etc/clang/x86_64-redhat-linux-gnu-clang++.cfg
+cmake version 4.3.0
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+47691f2ac820e16e48b5e59ae1fb14ef6a9c7756
+ M src/udp_receiver.cpp
+?? results/clock-guard-8WJqTk/
+CPU CORE SOCKET
+  0    0      0
+  1    0      0
+  2    1      0
+  3    1      0
+  4    2      0
+  5    2      0
+  6    3      0
+  7    3      0
+  8    4      0
+  9    4      0
+ 10    5      0
+ 11    5      0
+ 12    6      0
+ 13    6      0
+ 14    7      0
+ 15    7      0

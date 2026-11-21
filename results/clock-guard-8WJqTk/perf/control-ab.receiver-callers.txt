@@ -1,0 +1,114 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 15  of event 'cpu-clock:u'
+# Event count (approx.): 75376875
+#
+# Overhead       Samples  Command          Shared Object        Symbol                                                                                                                      
+# ........  ............  ...............  ...................  ............................................................................................................................
+#
+    46.67%             7  udp_bench_recei  [vdso]               [.] 0x0000000000000b1e
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               |          
+               |--1.23%--receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               |          std::chrono::_V2::steady_clock::now()
+               |          clock_gettime@@GLIBC_2.17
+               |          0x7f4e87214b1e
+               |          
+                --0.93%--std::chrono::_V2::steady_clock::now()
+                          clock_gettime@@GLIBC_2.17
+                          0x7f4e87214b1e
+
+    13.33%             2  udp_bench_recei  libstdc++.so.6.0.36  [.] std::chrono::_V2::steady_clock::now()
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               |          
+               |--0.31%--receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               |          std::chrono::_V2::steady_clock::now()
+               |          
+                --0.31%--std::chrono::_V2::steady_clock::now()
+                          std::common_type<std::chrono::duration<long, std::ratio<1l, 1l> >, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >::type std::chrono::operator+<long, std::ratio<1l, 1l>, long, std::ratio<1l, 1000000000l> >(std::chrono::duration<long, std::ratio<1l, 1l> > const&, std::chrono::duration<long, std::ratio<1l, 1000000000l> > const&) (inlined)
+
+    13.33%             2  udp_bench_recei  udp_bench_receiver   [.] receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               |          
+                --0.31%--(anonymous namespace)::to_timespec(std::chrono::duration<long, std::ratio<1l, 1000000000l> >) (inlined)
+                          std::enable_if<__is_duration<std::chrono::duration<long, std::ratio<1l, 1l> > >::value, std::chrono::duration<long, std::ratio<1l, 1l> > >::type std::chrono::duration_cast<std::chrono::duration<long, std::ratio<1l, 1l> >, long, std::ratio<1l, 1000000000l> >(std::chrono::duration<long, std::ratio<1l, 1000000000l> > const&) (inlined)
+                          std::chrono::duration<long, std::ratio<1l, 1l> > std::chrono::__duration_cast_impl<std::chrono::duration<long, std::ratio<1l, 1l> >, std::ratio<1l, 1000000000l>, long, true, false>::__cast<long, std::ratio<1l, 1000000000l> >(std::chrono::duration<long, std::ratio<1l, 1000000000l> > const&) (inlined)
+
+     6.67%             1  udp_bench_recei  [vdso]               [.] 0x0000000000000b23
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               std::chrono::_V2::steady_clock::now()
+               clock_gettime@@GLIBC_2.17
+               0x7f4e87214b23
+
+     6.67%             1  udp_bench_recei  libc.so.6            [.] __memset_avx2_unaligned_erms
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               (anonymous namespace)::UdpBatch::UdpBatch() (inlined)
+               __memset_avx2_unaligned_erms
+
+     6.67%             1  udp_bench_recei  libstdc++.so.6.0.36  [.] clock_gettime@plt
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               (anonymous namespace)::read_ready_batch(Receiver&, pollfd, Feed, (anonymous namespace)::UdpBatch&, UdpReadOptions const*)
+               Receiver::on_datagram(Feed, std::span<std::byte const, 18446744073709551615ul>) (inlined)
+               Receiver::on_datagram(std::span<std::byte const, 18446744073709551615ul> const&)
+               Receiver::commit(Message const&) (inlined)
+               std::function<void (Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&)>::operator()(Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&) const (inlined)
+               std::_Function_handler<void (Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&), main::$_0>::_M_invoke(std::_Any_data const&, Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&)
+               std::enable_if<is_invocable_r_v<void, main::$_0&, Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&>, void>::type std::__invoke_r<void, main::$_0&, Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&>(main::$_0&, Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&) (inlined)
+               void std::__invoke_impl<void, main::$_0&, Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&>(std::__invoke_other, main::$_0&, Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&) (inlined)
+               main::$_0::operator()(Receiver const&, std::variant<Receiver::Reset, Message, Receiver::Status> const&) const (inlined)
+               (anonymous namespace)::Results::on_notice(std::variant<Receiver::Reset, Message, Receiver::Status> const&) (inlined)
+               std::chrono::_V2::steady_clock::now()
+               clock_gettime@plt
+
+     6.67%             1  udp_bench_recei  udp_bench_receiver   [.] std::chrono::_V2::steady_clock::now()@plt
+            |
+            ---_start
+               __libc_start_main@@GLIBC_2.34
+               __libc_start_call_main
+               main
+               main::$_2::operator()(std::chrono::time_point<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > >, bool) const
+               receive_once(Receiver&, int, int, std::chrono::duration<long, std::ratio<1l, 1000000000l> >, int, UdpReadOptions const*)
+               std::chrono::_V2::steady_clock::now()@plt
+
+
+
+#
+# (Tip: List events using substring match: perf list <keyword>)
+#

@@ -1,5 +1,6 @@
 #include "../include/udp_receiver.h"
 
+#include <optional>
 #include <poll.h>
 #include <sys/socket.h>
 #include <sys/uio.h>
@@ -123,6 +124,12 @@ std::optional<ReplayRequest> receive_once(
     read_ready_batch(receiver, fds[0], Feed::A, batch, options);
     read_ready_batch(receiver, fds[1], Feed::B, batch, options);
     read_ready(receiver, fds[2], std::nullopt, options); // replay socket
+    // add this guard because Clock::now() is killing performance
+    // if there is no gap, poll_retransmission() will just return with nothing
+    // so lets try to remove a source of Clock::now() calls
+    if (!receiver.known_gap()) {
+        return std::nullopt;
+    }
     return receiver.poll_retransmission(Clock::now(), gap_wait);
 }
 
