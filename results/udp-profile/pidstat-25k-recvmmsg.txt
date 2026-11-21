@@ -1,0 +1,217 @@
+Linux 7.3.4-300.fc45.x86_64 (fedora) 	11/20/2026 	_x86_64_	(16 CPU)
+
+10:52:58 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+
+10:52:58 PM   UID       PID   cswch/s nvcswch/s  Command
+
+10:52:59 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:00 PM  1000     40892   23.00   50.00    0.00    0.00   73.00     2  udp_bench_publi
+10:53:00 PM  1000     40893   12.00   32.00    0.00    1.00   44.00     4  udp_bench_recei
+
+10:52:59 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:00 PM  1000     40892      2.00      8.00  udp_bench_publi
+10:53:00 PM  1000     40893  17355.00      3.00  udp_bench_recei
+
+10:53:00 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:01 PM  1000     40892   33.00   67.00    0.00    0.00  100.00     2  udp_bench_publi
+10:53:01 PM  1000     40893    8.00   53.00    0.00    0.00   61.00     4  udp_bench_recei
+
+10:53:00 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:01 PM  1000     40892      0.00      8.00  udp_bench_publi
+10:53:01 PM  1000     40893  24304.00      0.00  udp_bench_recei
+
+10:53:01 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:02 PM  1000     40892   30.00   70.00    0.00    0.00  100.00     2  udp_bench_publi
+10:53:02 PM  1000     40893   13.00   52.00    0.00    0.00   65.00     4  udp_bench_recei
+
+10:53:01 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:02 PM  1000     40892      0.00     13.00  udp_bench_publi
+10:53:02 PM  1000     40893  23867.00      0.00  udp_bench_recei
+
+10:53:02 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:03 PM  1000     40892   27.00   74.00    0.00    0.00  101.00     2  udp_bench_publi
+10:53:03 PM  1000     40893    0.00   67.00    0.00    0.00   67.00     4  udp_bench_recei
+
+10:53:02 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:03 PM  1000     40892      0.00      7.00  udp_bench_publi
+10:53:03 PM  1000     40893  23997.00      0.00  udp_bench_recei
+
+10:53:03 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:04 PM  1000     40892   27.00   74.00    0.00    0.00  101.00     2  udp_bench_publi
+10:53:04 PM  1000     40893   13.00   55.00    0.00    1.00   68.00     4  udp_bench_recei
+
+10:53:03 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:04 PM  1000     40892      0.00     16.00  udp_bench_publi
+10:53:04 PM  1000     40893  23714.00      1.00  udp_bench_recei
+
+10:53:04 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:05 PM  1000     40892   27.00   71.00    0.00    0.00   98.00     2  udp_bench_publi
+10:53:05 PM  1000     40893   10.00   57.00    0.00    0.00   67.00     4  udp_bench_recei
+
+10:53:04 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:05 PM  1000     40892      0.00      6.00  udp_bench_publi
+10:53:05 PM  1000     40893  23449.00      0.00  udp_bench_recei
+
+10:53:05 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:06 PM  1000     40892   32.00   68.00    0.00    0.00  100.00     2  udp_bench_publi
+10:53:06 PM  1000     40893    7.00   55.00    0.00    0.00   62.00     4  udp_bench_recei
+
+10:53:05 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:06 PM  1000     40892      0.00     15.00  udp_bench_publi
+10:53:06 PM  1000     40893  24005.00      0.00  udp_bench_recei
+
+10:53:06 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:07 PM  1000     40892   22.00   76.00    0.00    0.00   98.00     2  udp_bench_publi
+10:53:07 PM  1000     40893    0.00   47.00    0.00    0.00   47.00     4  udp_bench_recei
+
+10:53:06 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:07 PM  1000     40892      0.00     11.00  udp_bench_publi
+10:53:07 PM  1000     40893  24597.00      2.00  udp_bench_recei
+
+10:53:07 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:08 PM  1000     40892   20.00   80.00    0.00    0.00  100.00     2  udp_bench_publi
+10:53:08 PM  1000     40893   17.00   24.00    0.00    1.00   41.00     4  udp_bench_recei
+
+10:53:07 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:08 PM  1000     40892      0.00     15.00  udp_bench_publi
+10:53:08 PM  1000     40893  24866.00      3.00  udp_bench_recei
+
+10:53:08 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:09 PM  1000     40892   19.00   80.00    0.00    0.00   99.00     2  udp_bench_publi
+10:53:09 PM  1000     40893   26.00   14.00    0.00    0.00   40.00     4  udp_bench_recei
+
+10:53:08 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:09 PM  1000     40892      0.00     11.00  udp_bench_publi
+10:53:09 PM  1000     40893  24757.00      4.00  udp_bench_recei
+
+10:53:09 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:10 PM  1000     40892   19.00   82.00    0.00    0.00  101.00     2  udp_bench_publi
+10:53:10 PM  1000     40893   16.00   26.00    0.00    0.00   42.00     4  udp_bench_recei
+
+10:53:09 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:10 PM  1000     40892      0.00     14.00  udp_bench_publi
+10:53:10 PM  1000     40893  24929.00      3.00  udp_bench_recei
+
+10:53:10 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:11 PM  1000     40892   18.00   82.00    0.00    0.00  100.00     2  udp_bench_publi
+10:53:11 PM  1000     40893   12.00   28.00    0.00    1.00   40.00     4  udp_bench_recei
+
+10:53:10 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:11 PM  1000     40892      0.00     12.00  udp_bench_publi
+10:53:11 PM  1000     40893  24971.00      4.00  udp_bench_recei
+
+10:53:11 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:12 PM  1000     40892    5.00   24.00    0.00    0.00   29.00     2  udp_bench_publi
+
+10:53:11 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:12 PM  1000     40892      1.00      6.00  udp_bench_publi
+
+10:53:12 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:13 PM  1000     40899   11.00   40.00    0.00    0.00   51.00     2  udp_bench_publi
+10:53:13 PM  1000     40900    6.00   32.00    0.00    0.00   38.00     4  udp_bench_recei
+
+10:53:12 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:13 PM  1000     40899      2.00      6.00  udp_bench_publi
+10:53:13 PM  1000     40900  11850.00      3.00  udp_bench_recei
+
+10:53:13 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:14 PM  1000     40899   27.00   72.00    0.00    0.00   99.00     2  udp_bench_publi
+10:53:14 PM  1000     40900   18.00   60.00    0.00    0.00   78.00     4  udp_bench_recei
+
+10:53:13 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:14 PM  1000     40899      0.00     12.00  udp_bench_publi
+10:53:14 PM  1000     40900  22750.00      3.00  udp_bench_recei
+
+10:53:14 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:15 PM  1000     40899   30.00   71.00    0.00    0.00  101.00     2  udp_bench_publi
+10:53:15 PM  1000     40900   21.00   65.00    0.00    0.00   86.00     4  udp_bench_recei
+
+10:53:14 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:15 PM  1000     40899      0.00     12.00  udp_bench_publi
+10:53:15 PM  1000     40900  15468.00      6.00  udp_bench_recei
+
+10:53:15 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:16 PM  1000     40899   25.00   75.00    0.00    0.00  100.00     2  udp_bench_publi
+10:53:16 PM  1000     40900   22.00   67.00    0.00    0.00   89.00     4  udp_bench_recei
+
+10:53:15 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:16 PM  1000     40899      0.00     15.00  udp_bench_publi
+10:53:16 PM  1000     40900  12765.00      4.00  udp_bench_recei
+
+10:53:16 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:17 PM  1000     40899   28.00   71.00    0.00    0.00   99.00     2  udp_bench_publi
+10:53:17 PM  1000     40900   17.00   62.00    0.00    0.00   79.00     4  udp_bench_recei
+
+10:53:16 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:17 PM  1000     40899      0.00      8.00  udp_bench_publi
+10:53:17 PM  1000     40900  21465.00      4.00  udp_bench_recei
+
+10:53:17 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:18 PM  1000     40899   20.00   78.00    0.00    0.00   98.00     2  udp_bench_publi
+10:53:18 PM  1000     40900   10.00   60.00    0.00    0.00   70.00     4  udp_bench_recei
+
+10:53:17 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:18 PM  1000     40899      0.00     10.00  udp_bench_publi
+10:53:18 PM  1000     40900  24276.00      4.00  udp_bench_recei
+
+10:53:18 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:19 PM  1000     40899   17.00   83.00    0.00    0.00  100.00     2  udp_bench_publi
+10:53:19 PM  1000     40900   12.00   54.00    0.00    0.00   66.00     4  udp_bench_recei
+
+10:53:18 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:19 PM  1000     40899      0.00     11.00  udp_bench_publi
+10:53:19 PM  1000     40900  24867.00      3.00  udp_bench_recei
+
+10:53:19 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:20 PM  1000     40899   19.00   82.00    0.00    0.00  101.00     2  udp_bench_publi
+10:53:20 PM  1000     40900   12.00   55.00    0.00    0.00   67.00     4  udp_bench_recei
+
+10:53:19 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:20 PM  1000     40899      0.00     13.00  udp_bench_publi
+10:53:20 PM  1000     40900  24794.00      4.00  udp_bench_recei
+
+10:53:20 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:21 PM  1000     40899   18.00   81.00    0.00    0.00   99.00     2  udp_bench_publi
+10:53:21 PM  1000     40900   12.00   53.00    0.00    0.00   65.00     4  udp_bench_recei
+
+10:53:20 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:21 PM  1000     40899      0.00      5.00  udp_bench_publi
+10:53:21 PM  1000     40900  24835.00      3.00  udp_bench_recei
+
+10:53:21 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:22 PM  1000     40899   20.00   81.00    0.00    0.00  101.00     2  udp_bench_publi
+10:53:22 PM  1000     40900   14.00   53.00    0.00    0.00   67.00     4  udp_bench_recei
+
+10:53:21 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:22 PM  1000     40899      0.00     15.00  udp_bench_publi
+10:53:22 PM  1000     40900  24847.00      4.00  udp_bench_recei
+
+10:53:22 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:23 PM  1000     40899   18.00   81.00    0.00    0.00   99.00     2  udp_bench_publi
+10:53:23 PM  1000     40900   12.00   54.00    0.00    0.00   66.00     4  udp_bench_recei
+
+10:53:22 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:23 PM  1000     40899      0.00     11.00  udp_bench_publi
+10:53:23 PM  1000     40900  24777.00      4.00  udp_bench_recei
+
+10:53:23 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:24 PM  1000     40899   17.00   83.00    0.00    0.00  100.00     2  udp_bench_publi
+10:53:24 PM  1000     40900   12.00   54.00    0.00    0.00   66.00     4  udp_bench_recei
+
+10:53:23 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:24 PM  1000     40899      0.00     14.00  udp_bench_publi
+10:53:24 PM  1000     40900  24778.00      5.00  udp_bench_recei
+
+10:53:24 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+10:53:25 PM  1000     40899   10.00   42.00    0.00    0.00   52.00     2  udp_bench_publi
+
+10:53:24 PM   UID       PID   cswch/s nvcswch/s  Command
+10:53:25 PM  1000     40899      1.00      6.00  udp_bench_publi
+
+10:53:25 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+
+10:53:25 PM   UID       PID   cswch/s nvcswch/s  Command
+
+10:53:26 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+
+10:53:26 PM   UID       PID   cswch/s nvcswch/s  Command

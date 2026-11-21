@@ -55,6 +55,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_libraries(twinfeed_publisher PRIVATE twinfeed_feed project_options)
     add_executable(twinfeed_receiver apps/receiver_main.cpp)
     target_link_libraries(twinfeed_receiver PRIVATE twinfeed_udp project_options)
+
+    add_executable(udp_bench_publisher benchmarks/udp_baseline/publisher.cpp)
+    target_link_libraries(udp_bench_publisher PRIVATE twinfeed_feed project_options)
+    add_executable(udp_bench_receiver benchmarks/udp_baseline/receiver.cpp)
+    target_link_libraries(udp_bench_receiver PRIVATE twinfeed_udp project_options)
 endif()
 
 include(CTest)

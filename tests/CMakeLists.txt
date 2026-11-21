@@ -63,6 +63,9 @@ if(UNIX)
                 ${CMAKE_CURRENT_SOURCE_DIR}/network_replay.py
                 $<TARGET_FILE:twinfeed_receiver> $<TARGET_FILE:twinfeed_publisher>)
             set_tests_properties(receiver.network_replay PROPERTIES TIMEOUT 15)
+            add_test(NAME benchmark.udp_accounting COMMAND ${Python3_EXECUTABLE}
+                ${PROJECT_SOURCE_DIR}/benchmarks/udp_baseline/test_accounting.py $<TARGET_FILE:udp_bench_receiver>)
+            set_tests_properties(benchmark.udp_accounting PROPERTIES TIMEOUT 15)
         endif()
     else()
         target_sources(receiver_udp_loopback_test PRIVATE ../src/receiver.cpp)

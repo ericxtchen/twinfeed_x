@@ -1,33 +1,7 @@
-#include "../include/feed.h"
-#include "loopback.h"
+#include "replay_service.h"
 
 #include <iostream>
 
-namespace {
-void serve_replay(int fd, const publisher::Feed& source) {
-    for (;;) {
-        // One extra byte distinguishes an oversized control datagram from a valid one.
-        std::array<std::byte, replay_request_wire_size + 1> bytes;
-        sockaddr_in peer{};
-        socklen_t size = sizeof(peer);
-        const auto n = ::recvfrom(fd, bytes.data(), bytes.size(), 0,
-                                  reinterpret_cast<sockaddr*>(&peer), &size);
-        if (n < 0) {
-            if (errno == EINTR) continue;
-            throw std::system_error(errno, std::generic_category(), "recvfrom");
-        }
-        const auto request = decode_replay_request(std::span{bytes}.first(static_cast<std::size_t>(n)));
-        if (!request) continue;
-        const auto packets = source.replay(*request);
-        if (!packets) {
-            std::cerr << "Replay unavailable for session " << request->session_id << " range "
-                      << request->first_sequence << ".." << request->last_sequence << '\n';
-            continue;
-        }
-        for (const auto& packet : *packets) loopback::send_packet(fd, packet, &peer);
-    }
-}
-} // namespace
 // a starter main fn that emits some packets and drops the fourth one if signaled
 int main(int argc, char** argv) try {
     const bool drop_four = argc > 1 && std::string_view(argv[argc - 1]) == "--drop-four";
@@ -52,7 +26,7 @@ int main(int argc, char** argv) try {
         source.publish({.session_id = 0, .seq_num = 0, .price_ticks = 100, .quantity = i,
                         .instrument_id = 101, .side = Side::BID, .operation = Operation::UPSERT_LEVEL}).value();
     }
-    serve_replay(replay.fd(), source);
+    for (;;) publisher::reply_once(replay.fd(), source);
 } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';
     return 1;
